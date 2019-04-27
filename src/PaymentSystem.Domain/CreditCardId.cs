@@ -4,37 +4,65 @@ using System.ComponentModel;
 namespace PaymentSystem.Domain
 {
     [TypeConverter(typeof(Converter))]
-    public struct CreditLevelId : IEquatable<CreditLevelId>
+    public struct CreditCardId : IEquatable<CreditCardId>
     {
         private readonly Guid _value;
 
-        public CreditLevelId(Guid value) {
+        public CreditCardId(Guid value)
+        {
             _value = value;
         }
 
-        public static CreditLevelId Empty => new CreditLevelId(Guid.Empty);
+        public static CreditCardId Empty => new CreditCardId(Guid.Empty);
 
-        public static CreditLevelId NewId() => new CreditLevelId(Guid.NewGuid());
-
-        public static implicit operator Guid(CreditLevelId id) => id._value;
-
-        internal class Converter : GuidTypeConverter<CreditLevelId> { }
-
-        public override string ToString() => _value.ToString();
-
-        public bool Equals(CreditLevelId other) => _value.Equals(other._value);
-
-        public override bool Equals(object obj) {
-            if (obj is null) return false;
-            return obj is CreditLevelId id && Equals(id);
+        public static CreditCardId NewId()
+        {
+            return new CreditCardId(Guid.NewGuid());
         }
 
-        public override int GetHashCode() => _value.GetHashCode();
+        public static implicit operator Guid(CreditCardId id)
+        {
+            return id._value;
+        }
 
-        public static bool operator ==(CreditLevelId left, CreditLevelId right) => left.Equals(right);
+        internal class Converter : GuidTypeConverter<CreditCardId>
+        {
+        }
 
-        public static bool operator !=(CreditLevelId left, CreditLevelId right) => !left.Equals(right);
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
 
-        public static CreditLevelId Parse(string id) => new CreditLevelId(Guid.Parse(id));
+        public bool Equals(CreditCardId other)
+        {
+            return _value.Equals(other._value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            return obj is CreditCardId id && Equals(id);
+        }
+
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
+
+        public static bool operator ==(CreditCardId left, CreditCardId right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CreditCardId left, CreditCardId right)
+        {
+            return !left.Equals(right);
+        }
+
+        public static CreditCardId Parse(string id)
+        {
+            return new CreditCardId(Guid.Parse(id));
+        }
     }
 }

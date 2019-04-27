@@ -8,31 +8,61 @@ namespace PaymentSystem.Domain.Models.CreditCards
     {
         private readonly Guid _value;
 
-        public TransactionId(Guid value) => _value = value;
+        public TransactionId(Guid value)
+        {
+            _value = value;
+        }
 
         public static TransactionId Empty => new TransactionId(Guid.Empty);
 
-        public static TransactionId NewId() => new TransactionId(Guid.NewGuid());
+        public static TransactionId NewId()
+        {
+            return new TransactionId(Guid.NewGuid());
+        }
 
-        public static implicit operator Guid(TransactionId id) => id._value;
+        public static implicit operator Guid(TransactionId id)
+        {
+            return id._value;
+        }
 
-        internal class Converter : GuidTypeConverter<TransactionId> { }
+        internal class Converter : GuidTypeConverter<TransactionId>
+        {
+        }
 
-        public override string ToString() => _value.ToString();
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
 
-        public bool Equals(TransactionId other) => _value.Equals(other._value);
+        public bool Equals(TransactionId other)
+        {
+            return _value.Equals(other._value);
+        }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object obj)
+        {
             if (obj is null) return false;
             return obj is TransactionId id && Equals(id);
         }
 
-        public override int GetHashCode() => _value.GetHashCode();
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
 
-        public static bool operator ==(TransactionId left, TransactionId right) => left.Equals(right);
+        public static bool operator ==(TransactionId left, TransactionId right)
+        {
+            return left.Equals(right);
+        }
 
-        public static bool operator !=(TransactionId left, TransactionId right) => !left.Equals(right);
+        public static bool operator !=(TransactionId left, TransactionId right)
+        {
+            return !left.Equals(right);
+        }
 
-        public static TransactionId Parse(string id) => new TransactionId(Guid.Parse(id));
+        public static TransactionId Parse(string id)
+        {
+            return new TransactionId(Guid.Parse(id));
+        }
     }
 }

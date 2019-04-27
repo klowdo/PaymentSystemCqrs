@@ -7,7 +7,7 @@ namespace PaymentSystem.Portal.Tests
 {
     public static class ProblemDetailsExtension
     {
-        public static async Task<ProblemDetails> ProblemDetails(this Task<HttpRequestMessage> message)
+        public static async Task<ProblemDetails> ProblemDetails(this HttpResponseMessage message)
         {
             return JsonConvert.DeserializeObject<ProblemDetails>(await message.Content.ReadAsStringAsync());
         }

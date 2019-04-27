@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace Tests
+namespace PaymentSystem.Portal.Tests
 {
     public class PaymentSystemWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class

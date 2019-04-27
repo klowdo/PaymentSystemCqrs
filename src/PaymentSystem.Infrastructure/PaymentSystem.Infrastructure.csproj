@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PaymentSystem.Application\PaymentSystem.Application.csproj" />
+      <ProjectReference Include="..\PaymentSystem.Contracts\PaymentSystem.Contracts.csproj" />
+      <ProjectReference Include="..\PaymentSystem.Domain\PaymentSystem.Domain.csproj" />
+      <ProjectReference Include="..\PaymentSystem.ReadModel\PaymentSystem.ReadModel.csproj" />
+    </ItemGroup>
+
+</Project>

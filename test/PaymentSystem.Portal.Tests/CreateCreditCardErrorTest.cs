@@ -19,7 +19,7 @@ namespace PaymentSystem.Portal.Tests
         }
 
         [Test]
-        public async Task When_Wrong_SubscriptionId_Inserted_Return_BadRequest()
+        public void When_Wrong_SubscriptionId_Inserted_Return_BadRequest()
         {
             var result = Assert.ThrowsAsync<ValidationApiException>(async () => await _service.CreateCard(
                 new CreateCreditCardModel

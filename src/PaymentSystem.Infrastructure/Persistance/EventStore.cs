@@ -3,36 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PaymentSystem.Domain;
+using PaymentSystem.Infrastructure.Services;
 
-namespace PaymentSystem.Infrastructure
+namespace PaymentSystem.Infrastructure.Persistance
 {
     public class EventStore : IEventStore
     {
+        private readonly Dictionary<object, List<EventDescriptor>> _current =
+            new Dictionary<object, List<EventDescriptor>>();
+
         private readonly IEventQueue _eventQueue;
-
-        private struct EventDescriptor
-        {
-            public readonly Event EventData;
-            public readonly Guid Id;
-            public readonly long Version;
-
-            public EventDescriptor(Guid id, Event eventData, long version)
-            {
-                EventData = eventData;
-                Version = version;
-                Id = id;
-            }
-        }
 
         public EventStore(IEventQueue eventQueue)
         {
             _eventQueue = eventQueue;
         }
 
-        private readonly Dictionary<object, List<EventDescriptor>> _current =
-            new Dictionary<object, List<EventDescriptor>>();
-
-        public  Task SaveEventsAsync(object aggregateId, IEnumerable<Event> events, long expectedVersion)
+        public Task SaveEventsAsync(object aggregateId, IEnumerable<Event> events, long expectedVersion)
         {
             List<EventDescriptor> eventDescriptors;
 
@@ -64,6 +51,7 @@ namespace PaymentSystem.Infrastructure
                 // publish current event to the bus for further processing by subscribers
                 _eventQueue.Enqueue(@event);
             }
+
             return Task.CompletedTask;
         }
 
@@ -72,14 +60,28 @@ namespace PaymentSystem.Infrastructure
         {
             List<EventDescriptor> eventDescriptors;
 
-            if (!_current.TryGetValue(aggregateId, out eventDescriptors))
-            {
-                throw new AggregateNotFoundException();
-            }
+            if (!_current.TryGetValue(aggregateId, out eventDescriptors)) throw new AggregateNotFoundException();
 
             return Task.FromResult(eventDescriptors.Select(desc => desc.EventData).ToList());
         }
 
-        public bool Exists<TId>(TId id) => _current.ContainsKey(id);
+        public bool Exists<TId>(TId id)
+        {
+            return _current.ContainsKey(id);
+        }
+
+        private struct EventDescriptor
+        {
+            public readonly Event EventData;
+            public readonly Guid Id;
+            public readonly long Version;
+
+            public EventDescriptor(Guid id, Event eventData, long version)
+            {
+                EventData = eventData;
+                Version = version;
+                Id = id;
+            }
+        }
     }
 }

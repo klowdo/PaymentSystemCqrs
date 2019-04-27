@@ -6,7 +6,8 @@ namespace PaymentSystem.Domain.Models.CreditCards.Events
     {
         public readonly CreditCardSubscriptionId CreditCardSubscription;
 
-        public CreditCardCreated(CreditCardId id, CreditCardSubscriptionId creditCardSubscription, DateTimeOffset occured) : base(id, occured)
+        public CreditCardCreated(CreditCardId id, CreditCardSubscriptionId creditCardSubscription,
+            DateTimeOffset occured) : base(id, occured)
         {
             CreditCardSubscription = creditCardSubscription;
         }

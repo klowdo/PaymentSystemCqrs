@@ -1,6 +1,6 @@
 using System;
 
-namespace PaymentSystem.Domain.Models.Events
+namespace PaymentSystem.Domain.Models.CreditCardSubscriptions.Events
 {
     public class UseNoPaymentFee : CreditCardSubscriptionEvent
     {

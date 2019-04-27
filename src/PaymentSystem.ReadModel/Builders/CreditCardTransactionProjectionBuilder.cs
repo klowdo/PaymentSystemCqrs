@@ -5,21 +5,24 @@ using MediatR;
 using PaymentSystem.Contracts.Models;
 using PaymentSystem.Domain.Models.CreditCards;
 using PaymentSystem.Domain.Models.CreditCards.Events;
+using PaymentSystem.ReadModel.Projections;
+using PaymentSystem.ReadModel.Services;
 
-namespace PaymentSystem.ReadModel
+namespace PaymentSystem.ReadModel.Builders
 {
     public class CreditCardTransactionProjectionBuilder :
         ViewModelUpdateBase<CreditCardTransactionProjection>,
         INotificationHandler<CreditCardCreated>,
         INotificationHandler<CreditCardTransactionAdded>
     {
-        public CreditCardTransactionProjectionBuilder(IProjectionRepository<CreditCardTransactionProjection> repo) : base(repo)
+        public CreditCardTransactionProjectionBuilder(IProjectionRepository<CreditCardTransactionProjection> repo) :
+            base(repo)
         {
         }
 
         public Task Handle(CreditCardCreated evt, CancellationToken cancellationToken)
         {
-            return  Repo.SaveAsync(new CreditCardTransactionProjection
+            return Repo.SaveAsync(new CreditCardTransactionProjection
             {
                 ProjectionId = evt.AggregateId
             });
@@ -30,7 +33,6 @@ namespace PaymentSystem.ReadModel
             return Update(evt.AggregateId, model =>
             {
                 if (evt.Transaction.Type == TransactionType.Fee && evt.Transaction.ReferenceId != null)
-                {
                     model.Transactions.SingleOrDefault(x => x.Id == evt.Transaction.ReferenceId)?
                         .FeeTransactions.Add(new TransactionModel
                         {
@@ -40,9 +42,7 @@ namespace PaymentSystem.ReadModel
                             Id = evt.Transaction.Id,
                             Type = TransactionType.Fee.ToString("G")
                         });
-                }
                 else
-                {
                     model.Transactions.Add(new TransactionModel
                     {
                         Amount = evt.Transaction.Value,
@@ -51,7 +51,9 @@ namespace PaymentSystem.ReadModel
                         Id = evt.Transaction.Id,
                         Type = TransactionType.Payment.ToString("G")
                     });
-                }
+                var transactions = model.Transactions.ToList();
+                transactions.Sort(((t, next) => next.Created.CompareTo(t.Created)));
+                model.Transactions = transactions;
             });
         }
     }

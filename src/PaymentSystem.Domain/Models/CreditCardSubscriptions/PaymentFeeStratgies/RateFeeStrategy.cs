@@ -1,10 +1,17 @@
-namespace PaymentSystem.Domain
+namespace PaymentSystem.Domain.Models.CreditCardSubscriptions.PaymentFeeStratgies
 {
     public class RateFeeStrategy : IPaymentFeeStrategy
     {
-        public RateFeeStrategy(Rate feeRate) => _feeRate = feeRate;
         private readonly Rate _feeRate;
 
-        public Money CalculateFee(Payment payment) => _feeRate.GetRateOf(payment.Value);
+        public RateFeeStrategy(Rate feeRate)
+        {
+            _feeRate = feeRate;
+        }
+
+        public Money CalculateFee(Payment payment)
+        {
+            return _feeRate.GetRateOf(payment.Value);
+        }
     }
 }

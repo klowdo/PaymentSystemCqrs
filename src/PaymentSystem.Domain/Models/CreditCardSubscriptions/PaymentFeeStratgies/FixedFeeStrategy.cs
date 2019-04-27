@@ -1,9 +1,17 @@
-namespace PaymentSystem.Domain
+namespace PaymentSystem.Domain.Models.CreditCardSubscriptions.PaymentFeeStratgies
 {
-    public class FixedFeeStrategy:IPaymentFeeStrategy
+    public class FixedFeeStrategy : IPaymentFeeStrategy
     {
-        public FixedFeeStrategy(Money flatFee) => _flatFee = flatFee;
         private readonly Money _flatFee;
-        public Money CalculateFee(Payment payment) => _flatFee;
+
+        public FixedFeeStrategy(Money flatFee)
+        {
+            _flatFee = flatFee;
+        }
+
+        public Money CalculateFee(Payment payment)
+        {
+            return _flatFee;
+        }
     }
 }

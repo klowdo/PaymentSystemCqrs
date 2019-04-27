@@ -1,9 +1,9 @@
 using System;
 using PaymentSystem.Application;
 
-namespace PaymentSystem.Infrastructure
+namespace PaymentSystem.Infrastructure.Services
 {
-    public class SystemClock:ISystemClock
+    public class SystemClock : ISystemClock
     {
         public DateTimeOffset Now => DateTimeOffset.Now;
     }

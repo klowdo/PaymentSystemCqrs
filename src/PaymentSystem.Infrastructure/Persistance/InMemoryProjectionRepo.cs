@@ -2,18 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PaymentSystem.ReadModel;
+using PaymentSystem.ReadModel.Projections;
+using PaymentSystem.ReadModel.Services;
 
-namespace PaymentSystem.Infrastructure
+namespace PaymentSystem.Infrastructure.Persistance
 {
-    public class InMemoryProjectionRepo<TProjection>:IProjectionRepository<TProjection> where TProjection : IProjection
+    public class InMemoryProjectionRepo<TProjection> : IProjectionRepository<TProjection>
+        where TProjection : IProjection
     {
-        private IDictionary<Guid,TProjection > _projections = new Dictionary<Guid,TProjection>();
+        private readonly IDictionary<Guid, TProjection> _projections = new Dictionary<Guid, TProjection>();
 
         public Task<TProjection> GetAsync(Guid id)
         {
-            return _projections.TryGetValue(id, out var model) 
-                ? Task.FromResult(model) : Task.FromResult(default(TProjection));
+            return _projections.TryGetValue(id, out var model)
+                ? Task.FromResult(model)
+                : Task.FromResult(default(TProjection));
         }
 
         public Task SaveAsync(TProjection model)

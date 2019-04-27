@@ -9,13 +9,14 @@ using PaymentSystem.Domain.Models.CreditCardSubscriptions;
 
 namespace PaymentSystem.Application.Handlers
 {
-    public class CreateCreditCardHandler :CommandHandler<CreditCard, CreditCardId>, IRequestHandler<CreateCreditCard>
+    public class CreateCreditCardHandler : CommandHandler<CreditCard, CreditCardId>, IRequestHandler<CreateCreditCard>
     {
+        private readonly ISystemClock _clock;
         private readonly IAggregateRepository<CreditCard> _creditCardRepo;
         private readonly IAggregateRepository<CreditCardSubscription> _subscriptionRepo;
-        private readonly ISystemClock _clock;
 
-        public CreateCreditCardHandler(IAggregateRepository<CreditCard> creditCardRepo, IAggregateRepository<CreditCardSubscription> subscriptionRepo, ISystemClock clock): base(creditCardRepo)
+        public CreateCreditCardHandler(IAggregateRepository<CreditCard> creditCardRepo,
+            IAggregateRepository<CreditCardSubscription> subscriptionRepo, ISystemClock clock) : base(creditCardRepo)
         {
             _creditCardRepo = creditCardRepo;
             _subscriptionRepo = subscriptionRepo;
@@ -24,9 +25,9 @@ namespace PaymentSystem.Application.Handlers
 
         public async Task<Unit> Handle(CreateCreditCard request, CancellationToken cancellationToken)
         {
-            if(!await _subscriptionRepo.ExistsAsync(request.CreditCardSubscriptionId))
+            if (!await _subscriptionRepo.ExistsAsync(request.CreditCardSubscriptionId))
                 throw new InvalidOperationException("Can not create a card with non existing subscription");
-            var card = new CreditCard(CreditCardId.NewId(), request.CreditCardSubscriptionId, request.Occured);
+            var card = new CreditCard(request.CreditCardId, request.CreditCardSubscriptionId, request.Occured);
             await SaveAsync(card, -1);
             return Unit.Value;
         }

@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using MediatR;
 using PaymentSystem.Contracts.Models;
 using PaymentSystem.Domain.Models.CreditCardSubscriptions.Events;
-using PaymentSystem.Domain.Models.Events;
+using PaymentSystem.ReadModel.Projections;
+using PaymentSystem.ReadModel.Services;
 
-namespace PaymentSystem.ReadModel
+namespace PaymentSystem.ReadModel.Builders
 {
     public class CreditCardSubscriptionModelBuilder :
         ViewModelUpdateBase<CreditCardSubscriptionModelProjection>,
@@ -16,12 +17,14 @@ namespace PaymentSystem.ReadModel
         INotificationHandler<UseRatePaymentFee>,
         INotificationHandler<UseFixedPaymentFee>
     {
-        public CreditCardSubscriptionModelBuilder(IProjectionRepository<CreditCardSubscriptionModelProjection> repo) : base(repo)
+        public CreditCardSubscriptionModelBuilder(IProjectionRepository<CreditCardSubscriptionModelProjection> repo) :
+            base(repo)
         {
         }
 
-        public Task Handle(CreditCardSubscriptionCreated evt, CancellationToken cancellationToken) =>
-            Update(CreditCardSubscriptionModelProjection.Id, model =>
+        public Task Handle(CreditCardSubscriptionCreated evt, CancellationToken cancellationToken)
+        {
+            return Update(CreditCardSubscriptionModelProjection.Id, model =>
             {
                 model.Subscriptions.Add(new Subscription
                 {
@@ -29,32 +32,33 @@ namespace PaymentSystem.ReadModel
                     Name = evt.Name.ToString()
                 });
             });
-
-        public Task Handle(UseNoPaymentFee evt, CancellationToken cancellationToken) =>
-            Update(CreditCardSubscriptionModelProjection.Id, model =>
-            {
-                var subscription = model.Subscriptions.SingleOrDefault(x => x.Id == (Guid)evt.AggregateId);
-                if (subscription != null) subscription.Fee = "No Fee";
-            });
-
-        public Task Handle(UseRatePaymentFee evt, CancellationToken cancellationToken)
-        {
-            return Update(CreditCardSubscriptionModelProjection.Id, model =>
-            {
-                var subscription = model.Subscriptions.SingleOrDefault(x => x.Id == (Guid)evt.AggregateId);
-                if (subscription != null) subscription.Fee = $"Rate fee of {evt.FeeRate}";
-            });
-
         }
 
         public Task Handle(UseFixedPaymentFee evt, CancellationToken cancellationToken)
         {
             return Update(CreditCardSubscriptionModelProjection.Id, model =>
             {
-                var subscription = model.Subscriptions.SingleOrDefault(x => x.Id == (Guid)evt.AggregateId);
+                var subscription = model.Subscriptions.SingleOrDefault(x => x.Id == (Guid) evt.AggregateId);
                 if (subscription != null) subscription.Fee = $"Fixed fee of {evt.Fee}";
             });
+        }
 
+        public Task Handle(UseNoPaymentFee evt, CancellationToken cancellationToken)
+        {
+            return Update(CreditCardSubscriptionModelProjection.Id, model =>
+            {
+                var subscription = model.Subscriptions.SingleOrDefault(x => x.Id == (Guid) evt.AggregateId);
+                if (subscription != null) subscription.Fee = "No Fee";
+            });
+        }
+
+        public Task Handle(UseRatePaymentFee evt, CancellationToken cancellationToken)
+        {
+            return Update(CreditCardSubscriptionModelProjection.Id, model =>
+            {
+                var subscription = model.Subscriptions.SingleOrDefault(x => x.Id == (Guid) evt.AggregateId);
+                if (subscription != null) subscription.Fee = $"Rate fee of {evt.FeeRate}%";
+            });
         }
     }
 }

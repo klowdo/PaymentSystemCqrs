@@ -13,11 +13,6 @@ namespace PaymentSystem.Portal.Tests
     [TestFixture]
     public class InvalidBody_AddPaymentErrorTests : PaymentSystemWebApplicationFactory<Startup>
     {
-        private Guid _cardId;
-        private IPaymentsService _service;
-        private HttpResponseMessage _result;
-        private ProblemDetails _problemDetails;
-
         [SetUp]
         public async Task SetUp()
         {
@@ -34,11 +29,10 @@ namespace PaymentSystem.Portal.Tests
             _problemDetails = await _result.ProblemDetails();
         }
 
-        [Test]
-        public async Task When_No_Body_Input_Return_BadRequest()
-        {
-            Assert.That(_result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-        }
+        private Guid _cardId;
+        private IPaymentsService _service;
+        private HttpResponseMessage _result;
+        private ProblemDetails _problemDetails;
 
         [Test]
         public void When_amount_Is_Invalid_Return_ErrorMessage()
@@ -50,6 +44,12 @@ namespace PaymentSystem.Portal.Tests
         public void When_Date_Is_Invalid_Return_ErrorMessage()
         {
             Assert.That(_problemDetails.Errors, Contains.Key(nameof(AddPaymentModel.Date)));
+        }
+
+        [Test]
+        public void  When_No_Body_Input_Return_BadRequest()
+        {
+            Assert.That(_result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
     }
 }

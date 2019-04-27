@@ -1,5 +1,9 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
+using PaymentSystem.Application;
 using PaymentSystem.Domain;
+using PaymentSystem.Infrastructure.Persistance;
 
 namespace PaymentSystem.Infrastructure
 {
@@ -12,24 +16,29 @@ namespace PaymentSystem.Infrastructure
             _storage = storage;
         }
 
-        private static T ConstructAggregate(Guid id) => (T)Activator.CreateInstance(typeof(T), id);
 
-        public async Task<T> GetByIdAsync(Guid id)
+        public async Task SaveAsync(T aggregate, long expectedVersion)
+        {
+            await _storage.SaveEventsAsync(aggregate.Id, aggregate.GetUncommittedChanges().ToArray(), expectedVersion);
+            aggregate.CommitChanges();
+        }
+
+        public Task<bool> ExistsAsync<TId>(TId id)
+        {
+            return Task.FromResult(_storage.Exists(id));
+        }
+
+        public async Task<T> GetByIdAsync<TId>(TId id)
         {
             var obj = ConstructAggregate(id);
-            var e = await _storage.GetEventsForAggregateAsync(id);
+            var e = await _storage.GetEventsForAggregate(id);
             obj.LoadFromHistory(e);
             return obj;
         }
 
-        public Task<T> GetByIdAsync(Guid id, int version) => throw new NotImplementedException();
-
-        public Task<T> GetByIdAsync(Guid id, Guid eventId) => throw new NotImplementedException();
-
-        public async Task SaveAsync(T aggregateRoot, int version, Guid correlationId)
+        private static T ConstructAggregate<TId>(TId id)
         {
-            await _storage.SaveEventsAsync(aggregateRoot.Id, aggregateRoot.GetUncommittedChanges().ToArray(), version);
-            aggregateRoot.CommitChanges();
+            return (T) Activator.CreateInstance(typeof(T), id);
         }
     }
 }

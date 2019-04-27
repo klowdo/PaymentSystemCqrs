@@ -2,10 +2,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using PaymentSystem.Contracts.Models;
-using PaymentSystem.Domain.Models.CreditCards;
 using PaymentSystem.Domain.Models.CreditCards.Events;
+using PaymentSystem.ReadModel.Projections;
+using PaymentSystem.ReadModel.Services;
 
-namespace PaymentSystem.ReadModel
+namespace PaymentSystem.ReadModel.Builders
 {
     public class AllCreditCardsProjectionsBuilder :
         ViewModelUpdateBase<AllCreditCardsProjections>,

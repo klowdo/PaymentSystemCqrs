@@ -1,8 +1,8 @@
 using System;
 
-namespace PaymentSystem.Domain.Models.Events
+namespace PaymentSystem.Domain.Models.CreditCardSubscriptions.Events
 {
-    public class UseRatePaymentFee : Event
+    public class UseRatePaymentFee : CreditCardSubscriptionEvent
     {
         public readonly Rate FeeRate;
 

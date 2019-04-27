@@ -9,10 +9,19 @@ namespace PaymentSystem.Contracts
 {
     public interface IPaymentsService
     {
-        [Post("api/payments/{cardId}/add")]
+        [Post("/api/creditcard/create-card")]
+        Task<CreditCardCreatedResponse> CreateCard([Body] CreateCreditCardModel model);
+
+        [Post("/api/creditcard/{cardId}/add-payment")]
         Task<HttpResponseMessage> AddPayment(Guid cardId, [Body] AddPaymentModel model);
 
-        [Get("api/payments/{cardId}/transactions")]
-        Task<TransactionsModel> Transactions(Guid cardId, [Body] AddPaymentModel model);
+        [Get("/api/creditcard/{cardId}/transactions")]
+        Task<IEnumerable<TransactionModel>> GetTransactions(Guid cardId);
+
+        [Get("/api/creditcard/subscriptions")]
+        Task<IEnumerable<Subscription>> GetSubscriptions();
+
+        [Get("/api/creditcard/all")]
+        Task<IEnumerable<CreditCardModel>> GetAllCards();
     }
 }

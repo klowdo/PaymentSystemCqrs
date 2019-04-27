@@ -1,12 +1,11 @@
-using System.Collections.Generic;
 using PaymentSystem.Domain;
 
-namespace PaymentSystem.Infrastructure
+namespace PaymentSystem.Infrastructure.Services
 {
     public interface IEventQueue
     {
+        bool IsEmpty { get; }
         void Enqueue(Event evt);
         bool TryDequeue(out Event evt);
-        bool IsEmpty { get; }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using PaymentSystem.Application;
 using PaymentSystem.Application.Handlers;
 using PaymentSystem.Domain;
@@ -57,7 +58,7 @@ namespace PaymentSystem.Portal
             services.AddOptions()
                 .AddOptions<PaymentSystemOptions>("Options");
 
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info {Title = "My API", Version = "v1"}); });
+            services.AddSwaggerGen(c =>  c.SwaggerDoc("portal" , new OpenApiInfo {Title = "My API", Version = "v1"}));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

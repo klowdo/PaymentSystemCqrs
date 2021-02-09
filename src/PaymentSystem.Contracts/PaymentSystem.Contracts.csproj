@@ -6,7 +6,7 @@
 
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="9.0.0" />
-      <PackageReference Include="Refit" Version="5.1.67" />
+      <PackageReference Include="Refit" Version="6.0.1" />
     </ItemGroup>
 
 </Project>
